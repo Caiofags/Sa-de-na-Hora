@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Saúde na Hora</title>
+  <link rel="sty=lesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <header class="topo">
+    <div>
+      <h1>Saúde na Hora</h1>
+      <p>Sistema simples de agendamento de consultas</p>
+    </div>
+    <button id="logoutBtn" class="secundario escondido" type="button">Sair</button>
+  </header>
+
+  <main>
+    <section id="authView" class="painel auth">
+      <div class="abas">
+        <button id="loginTab" class="aba ativa" type="button">Entrar</button>
+        <button id="registerTab" class="aba" type="button">Criar conta</button>
+      </div>
+
+      <form id="loginForm">
+        <h2>Entrar no sistema</h2>
+        <label for="loginEmail">E-mail</label>
+        <input id="loginEmail" type="email" autocomplete="email" required>
+        <label for="loginPassword">Senha</label>
+        <input id="loginPassword" type="password" autocomplete="current-password" required>
+        <button type="submit">Entrar</button>
+        <p class="ajuda">Para testar, crie uma conta na aba “Criar conta”.</p>
+      </form>
+
+      <form id="registerForm" class="escondido">
+        <h2>Criar cadastro</h2>
+        <label for="registerName">Nome completo</label>
+        <input id="registerName" type="text" maxlength="100" required>
+        <label for="registerEmail">E-mail</label>
+        <input id="registerEmail" type="email" autocomplete="email" required>
+        <label for="registerPhone">Telefone</label>
+        <input id="registerPhone" type="tel" inputmode="numeric" maxlength="15" placeholder="(00) 00000-0000" required>
+        <label for="registerPassword">Senha</label>
+        <input id="registerPassword" type="password" minlength="4" autocomplete="new-password" required>
+        <label for="registerPasswordConfirm">Confirmar senha</label>
+        <input id="registerPasswordConfirm" type="password" minlength="4" autocomplete="new-password" required>
+        <button type="submit">Cadastrar</button>
+      </form>
+    </section>
+
+    <section id="appView" class="escondido">
+      <div class="boas-vindas">
+        <div>
+          <h2 id="welcomeTitle">Olá!</h2>
+          <p>Escolha um horário e acompanhe suas consultas.</p>
+        </div>
+      </div>
+
+      <nav class="navegacao" aria-label="Navegação principal">
+        <button class="navBtn ativa" data-view="agendar" type="button">Agendar consulta</button>
+        <button class="navBtn" data-view="minhas" type="button">Minhas consultas</button>
+        <button class="navBtn" data-view="profissionais" type="button">Profissionais e agenda</button>
+        <button class="navBtn" data-view="fila" type="button">Fila de espera</button>
+        <button class="navBtn" data-view="operacoes" type="button">Operações</button>
+      </nav>
+
+      <section id="view-agendar" class="painel appSection">
+        <h2>Agendar consulta</h2>
+        <form id="appointmentForm" class="form-grid">
+          <div>
+            <label for="professionalSelect">Profissional</label>
+            <select id="professionalSelect" required></select>
+          </div>
+          <div>
+            <label for="appointmentDate">Data</label>
+            <input id="appointmentDate" type="date" required>
+          </div>
+          <div>
+            <label for="appointmentTime">Horário</label>
+            <select id="appointmentTime" required>
+              <option value="">Selecione a data e o profissional</option>
+            </select>
+          </div>
+          <div class="alinhado">
+            <button type="submit">Reservar consulta</button>
+          </div>
+        </form>
+        <p id="slotMessage" class="ajuda">Selecione um profissional e uma data para consultar os horários.</p>
+        <div id="slotMatrix" class="matriz"></div>
+        <div class="nota">Se o horário estiver ocupado, o sistema oferecerá a opção de entrar na fila de espera.</div>
+      </section>
+
+      <section id="view-minhas" class="painel appSection escondido">
+        <h2>Minhas consultas</h2>
+        <div class="form-grid filtros">
+          <div>
+            <label for="searchDate">Pesquisar por data</label>
+            <input id="searchDate" type="date">
+          </div>
+          <div>
+            <label for="searchProfessional">Pesquisar por profissional</label>
+            <select id="searchProfessional"><option value="">Todos</option></select>
+          </div>
+          <div class="alinhado">
+            <button id="clearFilters" class="secundario" type="button">Limpar filtros</button>
+          </div>
+        </div>
+        <h3>Consultas futuras</h3>
+        <div id="futureAppointments"></div>
+        <h3>Histórico</h3>
+        <div id="pastAppointments"></div>
+      </section>
+
+      <section id="view-profissionais" class="painel appSection escondido">
+        <h2>Profissionais e agenda</h2>
+        <p class="ajuda">A matriz mostra os horários de cada profissional na data selecionada. Os horários são fixos para manter o projeto simples.</p>
+        <div class="form-grid">
+          <div>
+            <label for="matrixDate">Data da agenda</label>
+            <input id="matrixDate" type="date">
+          </div>
+          <div class="alinhado">
+            <button id="refreshMatrix" type="button">Atualizar agenda</button>
+          </div>
+        </div>
+        <div id="professionalsList" class="lista-profissionais"></div>
+        <div id="allMatrix" class="matriz"></div>
+      </section>
+
+      <section id="view-fila" class="painel appSection escondido">
+        <h2>Fila de espera</h2>
+        <p class="ajuda">A fila é organizada por ordem de chegada para cada profissional, data e horário. Quando uma consulta é cancelada, o primeiro paciente compatível é promovido automaticamente.</p>
+        <div id="waitingList"></div>
+      </section>
+
+      <section id="view-operacoes" class="painel appSection escondido">
+        <h2>Últimas operações</h2>
+        <p class="ajuda">Esta pilha registra as ações mais recentes. A última operação pode ser desfeita para demonstrar o funcionamento da estrutura de pilha (LIFO).</p>
+        <button id="undoBtn" class="secundario" type="button">Desfazer última operação</button>
+        <div id="operationList"></div>
+      </section>
+    </section>
+
+    <div id="message" class="mensagem escondido" role="status" aria-live="polite"></div>
+  </main>
+
+  <footer>
+    <p>Saúde na Hora — projeto escolar desenvolvido com HTML, CSS, JavaScript e localStorage.</p>
+    <p class="ajuda">Demonstração acadêmica: não utilizar para agendamentos médicos reais.</p>
+  </footer>
+</body>
+</html>
